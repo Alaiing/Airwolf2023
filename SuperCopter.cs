@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Oudidon;
 using System;
@@ -40,6 +41,11 @@ namespace Airwolf2023
         public bool IsHorizontal => _stateMachine.CurrentState == STATE_HORIZONTAL;
         public bool IsVertical => !IsHorizontal;
 
+        private SoundEffect _flapSound;
+        private SoundEffectInstance _flapSoundInstance;
+        private SoundEffect _collisionSound;
+        private SoundEffectInstance _collisionSoundInstance;
+
         public SuperCopter(string spriteSheet, Game game) : base(spriteSheet, game) { }
 
         protected override void LoadContent()
@@ -50,6 +56,12 @@ namespace Airwolf2023
             _spriteSheet.RegisterAnimation("ToHorizontal", 2, 1, 8f);
             _spriteSheet.RegisterAnimation("Vertical", 3, 3, 1f);
 
+            _flapSound = Game.Content.Load<SoundEffect>("blblbl");
+            _flapSoundInstance = _flapSound.CreateInstance();
+            _flapSoundInstance.IsLooped = true;
+
+            _collisionSound = Game.Content.Load<SoundEffect>("co");
+            _collisionSoundInstance = _collisionSound.CreateInstance();
         }
 
         public override void Initialize()
@@ -67,23 +79,37 @@ namespace Airwolf2023
             Reset();
         }
 
+        public void StartSound()
+        {
+            _flapSoundInstance.Play();
+        }
+
+        public void StopSound()
+        {
+            _flapSoundInstance.Stop();
+        }
+
         public void Reset()
         {
             _armour = 6;
             _verticalSpeed = 0f;
             _horizontalSpeed = 0f;
             _horizontalDirection = -1;
-            MoveTo(new Vector2(109, 55 + Airwolf.BACKGROUND_POSITION_Y));
+            MoveTo(new Vector2(109, 55));
             LookTo(new Vector2(_horizontalDirection, 0));
             _stateMachine.SetState(STATE_HORIZONTAL);
         }
 
         public void Collides(Point relativeContantPosition)
         {
+            _collisionSoundInstance.Play();
             if (_damageCooldown >= 0.25f)
             {
                 _damageCooldown = 0;
-                _armour--;
+                if (!Airwolf.CheatNoDamage)
+                {
+                    _armour--;
+                }
                 if (_armour < 0)
                     _stateMachine.SetState(STATE_DEATH);
             }
@@ -137,8 +163,12 @@ namespace Airwolf2023
                 {
                     _verticalSpeed = _fallSpeed;
                     _wasGoingDown = false;
+                    if(Airwolf.CheatNoGravity)
+                    {
+                        _verticalSpeed = 0;
+                    }
                 }
-                if (!_isColliding)
+                if (!_isColliding && !Airwolf.CheatNoGravity)
                 {
                     _verticalSpeed = MathF.Min(_verticalSpeed + deltaTime * _fallAcceleration, _fallSpeed);
                 }
@@ -192,6 +222,7 @@ namespace Airwolf2023
         }
 
         private bool _verticalAnimationDone;
+
         private void VerticalExit()
         {
             _verticalAnimationDone = false;

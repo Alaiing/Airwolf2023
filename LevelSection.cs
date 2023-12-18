@@ -4,6 +4,7 @@ using Oudidon;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,9 @@ namespace Airwolf2023
         private readonly List<Enemy> _enemies = new List<Enemy>();
         public List<Enemy> Enemies => _enemies;
 
+        private Vector2 _offset;
+        public Vector2 Offset => _offset;
+
         public LevelSection(SpriteSheet backgroundSheet, int frame, Game game) : base(game)
         {
             _frame = frame;
@@ -33,11 +37,21 @@ namespace Airwolf2023
             enemy.MoveTo(position);
         }
 
+        public void Show()
+        {
+            Visible = true;
+        }
+
+        public void Hide()
+        { 
+            Visible = false; 
+        }
+
         public void Activate()
         {
             Enabled = true;
             Visible = true;
-            _backgroundSheet.RestoreOriginalTexture();
+            //_backgroundSheet.RestoreOriginalTexture();
             foreach (Enemy enemy in _enemies)
             {
                 Game.Components.Add(enemy);
@@ -54,9 +68,46 @@ namespace Airwolf2023
             }
         }
 
+        public void Pause()
+        {
+            Enabled = false;
+            foreach (Enemy enemy in _enemies)
+            {
+                enemy.Enabled = false;
+            }
+        }
+
+        public void UnPause()
+        {
+            Enabled = false;
+            foreach (Enemy enemy in _enemies)
+            {
+                enemy.Enabled = true;
+            }
+        }
+
+        public void SetOffset(Vector2 offset)
+        {
+            _offset = offset;
+            foreach (Enemy enemy in _enemies)
+            {
+                enemy.drawOffset = offset;
+            }
+        }
+
+        public void Reset()
+        {
+            _backgroundSheet.RestoreOriginalTexture();
+            _offset = Vector2.Zero;
+            foreach (Enemy enemy in _enemies)
+            {
+                enemy.Reset();
+            }
+        }
+
         public override void Draw(GameTime gameTime)
         {
-            _backgroundSheet.DrawFrame(_frame, SpriteBatch, new Vector2(0, Airwolf.BACKGROUND_POSITION_Y), 0, Vector2.One, Color.White);
+            _backgroundSheet.DrawFrame(_frame, SpriteBatch, new Vector2(0, 0) + _offset, 0, Vector2.One, Color.White);
         }
     }
 }

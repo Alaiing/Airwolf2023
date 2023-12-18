@@ -37,6 +37,24 @@
 /processorParam:TextureFormat=Color
 /build:backgrounds.png
 
+#begin blblbl.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:blblbl.wav
+
+#begin co.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:co.wav
+
+#begin coin.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:coin.wav
+
 #begin explosion.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -60,6 +78,24 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:parabola.png
+
+#begin pinata.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:pinata.png
+
+#begin pouahwouha.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:pouahwouha.wav
 
 #begin supercopter.png
 /importer:TextureImporter

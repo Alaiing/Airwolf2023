@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Oudidon;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,9 @@ namespace Airwolf2023
 {
     public class Explosion : Character
     {
+        private SoundEffect _explosionSound;
+        private SoundEffectInstance _explosionSoundInstance;
+
         public Explosion(string spriteSheetAsset, Game game) : base(spriteSheetAsset, game) 
         { 
             Visible = false;
@@ -20,6 +24,9 @@ namespace Airwolf2023
         {
             _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, 31, 24, 15, 5);
             _spriteSheet.RegisterAnimation("Explode", 0, 5, 8f);
+
+            _explosionSound = Game.Content.Load<SoundEffect>("pouahwouha");
+            _explosionSoundInstance = _explosionSound.CreateInstance();
         }
 
         public override void Update(GameTime gameTime)
@@ -29,6 +36,7 @@ namespace Airwolf2023
         }
 
         private int _playedCounter;
+
         public void Explode(Action onExploded)
         {
             Visible = true;
@@ -45,6 +53,7 @@ namespace Airwolf2023
                     onExploded?.Invoke();
                 }
             });
+            _explosionSoundInstance.Play();
         }
     }
 }

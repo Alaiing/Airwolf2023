@@ -38,6 +38,8 @@ namespace Oudidon
         private int _currentAnimationFrameCount;
         private float _currentAnimationSpeed;
 
+        public Vector2 drawOffset;
+
         public bool CanChangeDirection { get; set; }
 
         private Action _onAnimationEnd;
@@ -120,7 +122,7 @@ namespace Oudidon
 
         public void LookTo(Vector2 direction, bool rotate = true)
         {
-            _moveDirection = direction;
+            _moveDirection = Vector2.Normalize(direction);
             if (rotate)
             {
                 if (direction.X != 0)
@@ -173,7 +175,7 @@ namespace Oudidon
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteSheet.DrawAnimationFrame(_currentAnimation, CurrentFrame, SpriteBatch, new Vector2(PixelPositionX, PixelPositionY), _currentRotation, _currentScale, _color);
+            _spriteSheet.DrawAnimationFrame(_currentAnimation, CurrentFrame, SpriteBatch, new Vector2(PixelPositionX, PixelPositionY) + drawOffset, _currentRotation, _currentScale, _color);
         }
 
         public Color GetPixel(int x, int y)

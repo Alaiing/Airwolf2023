@@ -1,5 +1,6 @@
 ﻿using C3.MonoGame;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Oudidon;
 using System;
@@ -17,6 +18,9 @@ namespace Airwolf2023
 
         private Vector2 _position;
         private Vector2 _direction;
+        private SoundEffect _fireSound;
+        private SoundEffectInstance _fireSoundInstance;
+
         public int DirectionX => (int)_direction.X;
         public int DirectionY => (int)_direction.Y;
 
@@ -27,13 +31,20 @@ namespace Airwolf2023
             Remove();
         }
 
+        protected override void LoadContent()
+        {
+            _fireSound = Game.Content.Load<SoundEffect>("co");
+            _fireSoundInstance = _fireSound.CreateInstance();
+        }
+
         public void Fire(Vector2 position, Vector2 direction)
         {
             Visible= true;
             Enabled= true;
             _position = position;
             _direction = direction;
-            
+            _fireSoundInstance.Stop();
+            _fireSoundInstance.Play();
         }
 
         public void Remove()
@@ -46,7 +57,7 @@ namespace Airwolf2023
         {
             _position += _direction * 100f * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_position.X < 0 || _position.X > Game.ScreenWidth || _position.Y < Airwolf.BACKGROUND_POSITION_Y || _position.Y > Airwolf.BACKGROUND_POSITION_Y + 111)
+            if (_position.X < 0 || _position.X > Game.ScreenWidth || _position.Y < 0 || _position.Y > 111)
             {
                 Remove();
             }

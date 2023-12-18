@@ -10,8 +10,10 @@ namespace Airwolf2023
 {
     public class Level
     {
-        private readonly List<LevelSection> _levelSections = new List<LevelSection>();
+        private readonly LevelSection[] _levelSections = new LevelSection[12];
         private int _currentSectionIndex;
+        public int CurrentSectionIndex => _currentSectionIndex;
+        public int CurrentBackgroundFrame => _levelSections[_currentSectionIndex].Frame;
 
         public List<Enemy> CurrentEnemies => _currentSectionIndex >= 0 ? _levelSections[_currentSectionIndex].Enemies : null;
 
@@ -20,9 +22,9 @@ namespace Airwolf2023
             _currentSectionIndex = -1;
         }
 
-        public void AddSection(LevelSection section)
+        public void AddSection(LevelSection section, int index)
         {
-            _levelSections.Add(section);
+            _levelSections[index] = section;
         }
 
         public void SetCurrentSection(int sectionIndex)
@@ -33,15 +35,23 @@ namespace Airwolf2023
             }
             _currentSectionIndex = sectionIndex;
             _levelSections[_currentSectionIndex].Activate();
+            _levelSections[_currentSectionIndex].UnPause();
         }
 
+        public LevelSection GetSection(int sectionIndex)
+        {
+            return _levelSections[sectionIndex];
+        }
 
         public void Activate(Game game)
         {
             foreach (var section in _levelSections)
             {
-                game.Components.Add(section);
-                section.Deactivate();
+                if (section != null)
+                {
+                    game.Components.Add(section);
+                    section.Deactivate();
+                }
             }
         }
 
@@ -53,25 +63,50 @@ namespace Airwolf2023
             }
             foreach (var section in _levelSections)
             {
-                game.Components.Remove(section);
+                if (section != null)
+                {
+                    game.Components.Remove(section);
+                }
             }
+        }
+
+        public void Pause()
+        {
+            _levelSections[_currentSectionIndex].Pause();
         }
 
         public static Level CreateLevel(SpriteSheet backgroundSheet, Game game)
         {
             Level level = new Level();
 
-            LevelSection newSection = new LevelSection(backgroundSheet, 0, game);
+            for (int i = 0; i< backgroundSheet.FrameCount; i++)
+            {
+                level.AddSection(new LevelSection(backgroundSheet, i, game), i); 
+            }
+
             Enemy newEnemy = new Enemy("parabola", game);
             newEnemy.SetScale(new Vector2(1, -1));
-            newSection.AddEnemy(newEnemy, new Vector2(40, 32 + Airwolf.BACKGROUND_POSITION_Y));
-            newSection.AddEnemy(new Enemy("parabola", game), new Vector2(134, 79 + Airwolf.BACKGROUND_POSITION_Y));
-            level.AddSection(newSection);
+            level.GetSection(0).AddEnemy(newEnemy, new Vector2(40, 32));
+            level.GetSection(0).AddEnemy(new Enemy("parabola", game), new Vector2(134, 79));
 
-            newSection = new LevelSection(backgroundSheet, 4, game);
-            newSection.AddEnemy(new Enemy("parabola", game), new Vector2(40, 32 + Airwolf.BACKGROUND_POSITION_Y));
-            newSection.AddEnemy(new Enemy("parabola", game), new Vector2(134, 80 + Airwolf.BACKGROUND_POSITION_Y));
-            level.AddSection(newSection);
+            newEnemy = new Enemy("parabola", game);
+            newEnemy.SetScale(new Vector2(1, -1));
+            level.GetSection(4).AddEnemy(newEnemy, new Vector2(32, 32));
+            level.GetSection(4).AddEnemy(new Enemy("parabola", game), new Vector2(126, 64));
+
+            newEnemy = new Enemy("pinata", game);
+            newEnemy.AddWaypoint(42, 48);
+            newEnemy.AddWaypoint(101, 48);
+            newEnemy.AddWaypoint(101, 67);
+            newEnemy.AddWaypoint(42, 67);
+            newEnemy.SetBaseSpeed(20f);
+            level.GetSection(8).AddEnemy(newEnemy, new Vector2(42, 48));
+            newEnemy.Reset();
+            newEnemy = new Enemy("parabola", game);
+            newEnemy.SetScale(new Vector2(1, -1));
+            level.GetSection(8).AddEnemy(newEnemy, new Vector2(88, 32));
+            level.GetSection(8).AddEnemy(new Enemy("parabola", game), new Vector2(16, 63));
+
 
             return level;
         }
