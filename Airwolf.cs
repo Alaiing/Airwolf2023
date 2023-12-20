@@ -46,19 +46,26 @@ namespace Airwolf2023
         public static bool CheatNoCollision = false;
         public static bool CheatNoGravity = false;
         public static bool CheatNoDamage = false;
+        private int _startingSection = 0;
+
+        private int _score;
+        private int _highscore;
+        private float _timer;
+
+        private Texture2D _hud;
 
         public Airwolf(int screenWith, int screenHeight, int screenScaleX, int screenScaleY) : base(screenWith, screenHeight, screenScaleX, screenScaleY) { }
 
         protected override void Initialize()
         {
-            _superCopter = new SuperCopter("supercopter", this);
+            _superCopter = new SuperCopter("supercopter", 27, 13, this);
             _superCopter.Initialize();
             _superCopter.SetAnimation("Horizontal");
             Components.Add(_superCopter);
             _superCopter.DrawOrder = 0;
             _repositionningY = 111 - 8 - _superCopter.SpriteSheet.BottomMargin;
 
-            _explosion = new Explosion("explosion", this);
+            _explosion = new Explosion("explosion", 31, 24, this);
             _explosion.Initialize();
             Components.Add(_explosion);
             _superCopter.DrawOrder = 1;
@@ -66,6 +73,7 @@ namespace Airwolf2023
             _bullet = new Bullet(this);
             Components.Add(_bullet);
 
+            _hud = Content.Load<Texture2D>("hud");
 
             EventsManager.ListenTo<SuperCopter>("FIRE", OnFired);
 
@@ -82,6 +90,8 @@ namespace Airwolf2023
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            CreateSpriteFont();
 
             _backgroundsSheet = new SpriteSheet(Content, "backgrounds", 160, 111);
 
@@ -123,6 +133,7 @@ namespace Airwolf2023
             GraphicsDevice.Viewport = new Viewport(0, 0, _screenWidth, _screenHeight);
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp, blendState: BlendState.AlphaBlend);
+            DrawHUD();
             DrawArmour();
             _spriteBatch.End();
 
@@ -133,17 +144,17 @@ namespace Airwolf2023
         }
 
         List<Vector2> debugContacts = new List<Vector2>();
+
         private bool TestContact(out Point relativeContactPoint)
         {
             debugContacts.Clear();
             for (int x = 0; x < _superCopter.SpriteSheet.FrameWidth; x++)
-                for (int y = 0; y < _superCopter.SpriteSheet.FrameHeight; y++)
+                for (int y = -1; y < _superCopter.SpriteSheet.FrameHeight; y++)
                 {
-                    Color pixel = _superCopter.GetPixel(x, y);
-                    if (pixel.A > 0)
+                    if (y < 0 || _superCopter.GetPixel(x, y).A > 0)
                     {
                         int backgroundX = _superCopter.PixelPositionX - _superCopter.SpriteSheet.LeftMargin + x;
-                        int backgroundY = (_superCopter.PixelPositionY - _superCopter.SpriteSheet.TopMargin) + y;
+                        int backgroundY = _superCopter.PixelPositionY - _superCopter.SpriteSheet.TopMargin + y;
 
                         Color backgroundPixel = GetBackgroundColor(backgroundX, backgroundY);
                         if (backgroundPixel.A > 0)
@@ -195,7 +206,14 @@ namespace Airwolf2023
                 _backgroundsSheet.SetPixel(_level.CurrentBackgroundFrame, positionInBackground.X + _bullet.DirectionX, positionInBackground.Y, new Color(0, 0, 0, 0));
                 _backgroundsSheet.SetPixel(_level.CurrentBackgroundFrame, positionInBackground.X + _bullet.DirectionX, positionInBackground.Y + 1, new Color(0, 0, 0, 0));
 
+                int gateSection = _level.GetSwitchGateApprox(new Point(positionInBackground.X, positionInBackground.Y), _level.CurrentSectionIndex);
+                if (gateSection >= 0)
+                {
+                    _level.GetSection(gateSection).gateOpen = true;
+                }
+
                 _wallDestructionSoundInstance.Play();
+                _score += 2;
             }
 
             if (_bulletBackgroundColor.A > 0)
@@ -248,12 +266,44 @@ namespace Airwolf2023
             }
         }
 
+        private void DrawHUD()
+        {
+            _spriteBatch.Draw(_hud, new Vector2(1,1), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _highscore.ToString("00000"), new Vector2(16, 25), Color.White);
+            _spriteBatch.DrawString(_spriteFont, _score.ToString("00000"), new Vector2(104, 25), Color.White);
+            int seconds = (int)MathF.Floor(_timer);
+            _spriteBatch.DrawString(_spriteFont, seconds.ToString("00"), new Vector2(62, 41), Color.White);
+            int hundredth = (int)MathF.Floor((_timer - (int)MathF.Floor(_timer)) * 100);
+            _spriteBatch.DrawString(_spriteFont, hundredth.ToString("00"), new Vector2(82, 41), Color.White);
+        }
+
+        SpriteFont _spriteFont;
+        private void CreateSpriteFont()
+        {
+            Texture2D fontTexture = Content.Load<Texture2D>("digits");
+            List<Rectangle> glyphBounds = new List<Rectangle>();
+            List<Rectangle> cropping = new List<Rectangle>();
+            string charsString = "0123456789";
+            List<char> chars = new List<char>();
+            chars.AddRange(charsString);
+            List<Vector3> kerning = new List<Vector3>();
+            for (int i = 0; i < fontTexture.Width / 8; i++)
+            {
+                glyphBounds.Add(new Rectangle(i * 8, 0, 8, 15));
+                cropping.Add(new Rectangle(0, 0, 8, 15));
+                kerning.Add(new Vector3(0, 8, 0));
+            }
+            _spriteFont = new SpriteFont(fontTexture, glyphBounds, cropping, chars, 0, 0, kerning, '0');
+        }
+
+
         #region States
         private void GameUpdate(GameTime gameTime, float stateTime)
         {
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (_isScrolling)
             {
-                _scrollingTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _scrollingTime += deltaTime;
                 _level.GetSection(_scrollingDestinationSection).SetOffset(Vector2.Lerp(_scrollingDestinationPosition, Vector2.Zero, _scrollingTime / _scrollingDuration));
                 _level.GetSection(_level.CurrentSectionIndex).SetOffset(Vector2.Lerp(Vector2.Zero, -_scrollingDestinationPosition, _scrollingTime / _scrollingDuration));
                 _superCopter.drawOffset = _level.GetSection(_level.CurrentSectionIndex).Offset;
@@ -264,14 +314,22 @@ namespace Airwolf2023
             }
             else
             {
+                if (!_superCopter.IsExploding)
+                {
+                    _timer = MathF.Max(0, _timer - deltaTime);
+                    if (_timer <= 0)
+                    {
+                        Die();
+                        return;
+                    }
+                }
+
                 if (!CheatNoCollision && TestContact(out Point relativeContactPoint))
                 {
                     _superCopter.Collides(relativeContactPoint);
                     if (_superCopter.Armour < 0 && !_explosion.Visible)
                     {
-                        _superCopter.StopSound();
-                        _explosion.MoveTo(_superCopter.Position);
-                        _explosion.Explode(() => SetState(STATE_TITLE));
+                        Die();
                     }
                 }
                 else
@@ -304,6 +362,13 @@ namespace Airwolf2023
             }
         }
 
+        private void Die()
+        {
+            _superCopter.Die();
+            _explosion.MoveTo(_superCopter.Position);
+            _explosion.Explode(() => SetState(STATE_TITLE));
+        }
+
         private void ChangeSection(int nextSection, Vector2 direction)
         {
             // Tout pauser
@@ -312,6 +377,7 @@ namespace Airwolf2023
 
             // Scroller vers la section suivante
             _level.GetSection(nextSection).Show();
+            _level.GetSection(nextSection).UpdateGate();
 
             _isScrolling = true;
             _scrollingDestinationSection = nextSection;
@@ -359,13 +425,21 @@ namespace Airwolf2023
             _superCopter.Reset();
             _superCopter.Visible = true;
             _currentLevelIndex = 0;
+            _score = 0;
+            _timer = 60f;
             _level.Activate(this);
-            _level.SetCurrentSection(0);
+            _level.SetCurrentSection(_startingSection);
+            _level.GetSection(_startingSection).Reset();
+            _level.Reset();
             _superCopter.StartSound();
         }
 
         private void TitleEnter()
         {
+            if (_score > _highscore)
+            {
+                _highscore = _score;
+            }
             _level.Deactivate(this);
             _superCopter.Visible = false;
         }

@@ -14,7 +14,7 @@ namespace Airwolf2023
         private SoundEffect _explosionSound;
         private SoundEffectInstance _explosionSoundInstance;
 
-        public Explosion(string spriteSheetAsset, Game game) : base(spriteSheetAsset, game) 
+        public Explosion(string spriteSheetAsset, int frameWidth, int frameHeight, Game game) : base(spriteSheetAsset, frameWidth, frameHeight, game) 
         { 
             Visible = false;
             Enabled = false;

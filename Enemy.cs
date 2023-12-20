@@ -10,39 +10,64 @@ namespace Airwolf2023
 {
     public class Enemy : Character
     {
-        private List<Point> _waypoints = new List<Point>();
+        struct Waypoint
+        {
+            public Point position;
+            public float duration;
+            public bool teleportToNext;
+        }
+        private List<Waypoint> _waypoints = new List<Waypoint>();
         private int _currentWaypoint;
         private int _currentTargetWaypoint;
+        private float _waypointTimer;
 
-        public Enemy(string spriteSheetAsset, Game game) : base(spriteSheetAsset, game)
+        public Enemy(string spriteSheetAsset, int frameWidth, int frameHeight, Game game) : base(spriteSheetAsset, frameWidth, frameHeight, game)
         {
-            DrawOrder = 9;    
+            DrawOrder = 10;    
         }
 
         protected override void LoadContent()
         {
-            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, 8, 16);
+            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, _frameWidth, _frameHeight);
             _spriteSheet.RegisterAnimation("Idle", 0, 3, 8f);
             SetAnimation("Idle");
         }
 
         public override void Update(GameTime gameTime)
         {
-            Animate((float)gameTime.ElapsedGameTime.TotalSeconds);
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Animate(deltaTime);
 
             if (_waypoints.Count > 0)
             {
-                Move((float)gameTime.ElapsedGameTime.TotalSeconds);
-                if (PixelPositionX == _waypoints[_currentTargetWaypoint].X && PixelPositionY == _waypoints[_currentTargetWaypoint].Y) 
+                _waypointTimer += deltaTime;
+                if (_waypointTimer >= _waypoints[_currentWaypoint].duration)
                 {
-                    SetCurrentWaypoint(GetNextWaypoint(_currentWaypoint));
+                    Move((float)gameTime.ElapsedGameTime.TotalSeconds);
+                    Vector2 toDestination = _waypoints[_currentTargetWaypoint].position.ToVector2() - Position;
+                    Vector2 movementDirection = MoveDirection;
+
+                    if (Vector2.Dot(toDestination, movementDirection) <= 0)
+                    {
+                        int nextWaypoint = _currentTargetWaypoint;
+                        if (_waypoints[_currentTargetWaypoint].teleportToNext)
+                        {
+                            nextWaypoint = GetNextWaypoint(_currentTargetWaypoint);
+                            MoveTo(_waypoints[nextWaypoint].position.ToVector2());
+                        }
+                        else
+                        {
+                            MoveTo(_waypoints[_currentTargetWaypoint].position.ToVector2());
+                        }
+                        SetCurrentWaypoint(nextWaypoint);
+                    }
                 }
             }
         }
 
-        public void AddWaypoint(int x, int y)
+        public void AddWaypoint(int x, int y, float duration = 0f, bool teleport = false)
         {
-            _waypoints.Add(new Point(x,y));
+            _waypoints.Add(new Waypoint { position = new Point(x, y), duration = duration, teleportToNext = teleport });
         }
 
         private int GetNextWaypoint(int waypointIndex)
@@ -54,14 +79,15 @@ namespace Airwolf2023
         {
             _currentWaypoint = index;
             _currentTargetWaypoint = GetNextWaypoint(index);
-            LookTo((_waypoints[_currentTargetWaypoint] - _waypoints[_currentWaypoint]).ToVector2(), rotate:false);
+            _waypointTimer = 0;
+            LookTo((_waypoints[_currentTargetWaypoint].position - _waypoints[_currentWaypoint].position).ToVector2(), rotate:false);
         }
 
         public void Reset()
         {
             if (_waypoints.Count > 0)
             {
-                MoveTo(new Vector2(_waypoints[0].X, _waypoints[0].Y));
+                MoveTo(new Vector2(_waypoints[0].position.X, _waypoints[0].position.Y));
                 SetCurrentWaypoint(0);
             }
         }

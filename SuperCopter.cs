@@ -40,21 +40,27 @@ namespace Airwolf2023
 
         public bool IsHorizontal => _stateMachine.CurrentState == STATE_HORIZONTAL;
         public bool IsVertical => !IsHorizontal;
+        public bool IsExploding => _stateMachine.CurrentState == STATE_DEATH;
 
         private SoundEffect _flapSound;
         private SoundEffectInstance _flapSoundInstance;
         private SoundEffect _collisionSound;
         private SoundEffectInstance _collisionSoundInstance;
 
-        public SuperCopter(string spriteSheet, Game game) : base(spriteSheet, game) { }
+        private SpriteSheet _helixSheet;
+        private float _helixFrame;
+
+        public SuperCopter(string spriteSheet, int frameWidth, int frameHeight, Game game) : base(spriteSheet, frameWidth, frameHeight, game) { }
 
         protected override void LoadContent()
         {
-            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, 27, 13, 13, 0);
+            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, 27, 13, 13, -2);
             _spriteSheet.RegisterAnimation("Horizontal", 0, 0, 1f);
             _spriteSheet.RegisterAnimation("ToVertical", 1, 3, 8f);
             _spriteSheet.RegisterAnimation("ToHorizontal", 2, 1, 8f);
             _spriteSheet.RegisterAnimation("Vertical", 3, 3, 1f);
+
+            _helixSheet = new SpriteSheet(Game.Content, "helix", 24, 1, 12, 0);
 
             _flapSound = Game.Content.Load<SoundEffect>("blblbl");
             _flapSoundInstance = _flapSound.CreateInstance();
@@ -110,14 +116,18 @@ namespace Airwolf2023
                 {
                     _armour--;
                 }
-                if (_armour < 0)
-                    _stateMachine.SetState(STATE_DEATH);
             }
             int pushBackX = -Math.Sign(_horizontalSpeed);
             int pushBackY = (_wasGoingDown || _wasGoingUp || _horizontalSpeed == 0) ? -Math.Sign(_verticalSpeed) : 0;
             MoveBy(new Vector2(pushBackX, pushBackY) * 2);
             _verticalSpeed = 0f;
             _isColliding = true;
+        }
+
+        public new void Die()
+        {
+            StopSound();
+            _stateMachine.SetState(STATE_DEATH);
         }
 
         public void StopColliding()
@@ -127,11 +137,23 @@ namespace Airwolf2023
 
         public override void Update(GameTime gameTime)
         {
+            float deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             _stateMachine.Update(gameTime);
             if (!_isColliding)
             {
-                Animate((float)gameTime.ElapsedGameTime.TotalSeconds);
+                Animate(deltaTime);
             }
+            _helixFrame += 40 * deltaTime;
+            if (_helixFrame >= _helixSheet.FrameCount) 
+            { 
+                _helixFrame = 0; 
+            }
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            base.Draw(gameTime);
+            _helixSheet.DrawFrame((int)MathF.Floor(_helixFrame), SpriteBatch, Position + drawOffset, 0, Vector2.One, Color.White);
         }
 
         private void BaseUpdate(GameTime gameTime, float stateTime)

@@ -20,6 +20,9 @@ namespace Airwolf2023
         public int Frame => _frame;
         private readonly List<Enemy> _enemies = new List<Enemy>();
         public List<Enemy> Enemies => _enemies;
+        public Gate _gate;
+        public bool gateOpen;
+        private readonly Dictionary<Point, int> _switches = new();
 
         private Vector2 _offset;
         public Vector2 Offset => _offset;
@@ -28,13 +31,34 @@ namespace Airwolf2023
         {
             _frame = frame;
             _backgroundSheet = backgroundSheet;
-            DrawOrder = 10;
+            DrawOrder = 9;
         }
 
         public void AddEnemy(Enemy enemy, Vector2 position)
         {
             _enemies.Add(enemy);
             enemy.MoveTo(position);
+        }
+
+        public void AddGate(Gate gate, Vector2 position)
+        {
+            AddEnemy(gate, position);
+            _gate = gate;
+        }
+
+        public void AddSwitch(Point position, int gateSection)
+        {
+            _switches.Add(position, gateSection);
+        }
+
+        public int GetSwitchGate(Point position) 
+        { 
+            if (_switches.TryGetValue(position, out int switchGate))
+            {
+                return switchGate;
+            }
+
+            return -1;
         }
 
         public void Show()
@@ -102,6 +126,15 @@ namespace Airwolf2023
             foreach (Enemy enemy in _enemies)
             {
                 enemy.Reset();
+            }
+            UpdateGate();
+        }
+
+        public void UpdateGate()
+        {
+            if (_gate != null)
+            {
+                _gate.Visible = !gateOpen;
             }
         }
 

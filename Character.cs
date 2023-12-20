@@ -12,6 +12,8 @@ namespace Oudidon
         private bool _enabled = true;
         public bool IsAlive => _enabled;
         protected string _spriteSheetAsset;
+        protected int _frameWidth;
+        protected int _frameHeight;
         protected SpriteSheet _spriteSheet;
         public SpriteSheet SpriteSheet => _spriteSheet;
         protected Vector2 _position;
@@ -45,9 +47,11 @@ namespace Oudidon
         private Action _onAnimationEnd;
         protected Action<int> _onAnimationFrame;
 
-        public Character(string spriteSheetAsset, Game game) : base(game)
+        public Character(string spriteSheetAsset, int frameWidth, int frameHeight, Game game) : base(game)
         {
             _spriteSheetAsset = spriteSheetAsset;
+            _frameWidth = frameWidth;
+            _frameHeight = frameHeight;
             _currentScale = Vector2.One;
             _currentFrame = 0;
             _color = Color.White;
@@ -60,7 +64,7 @@ namespace Oudidon
 
         protected override void LoadContent()
         {
-            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, 8, 8);
+            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, _frameWidth, _frameHeight);
         }
 
         public void SetColor(Color color)
