@@ -43,9 +43,10 @@ namespace Airwolf2023
 
         private int _repositionningY;
 
-        public static bool CheatNoCollision = false;
-        public static bool CheatNoGravity = false;
+        public static bool CheatNoCollision = true;
+        public static bool CheatNoGravity = true;
         public static bool CheatNoDamage = false;
+        public static bool CheatNoTimer = false;
         private int _startingSection = 0;
 
         private int _score;
@@ -53,6 +54,9 @@ namespace Airwolf2023
         private float _timer;
 
         private Texture2D _hud;
+
+        private SoundEffect _mainMusic;
+        private SoundEffectInstance _mainMusicInstance;
 
         public Airwolf(int screenWith, int screenHeight, int screenScaleX, int screenScaleY) : base(screenWith, screenHeight, screenScaleX, screenScaleY) { }
 
@@ -99,8 +103,13 @@ namespace Airwolf2023
 
             _wallDestructionSound = Content.Load<SoundEffect>("coin");
             _wallDestructionSoundInstance = _wallDestructionSound.CreateInstance();
+            _wallDestructionSoundInstance.Volume = 0.5f;
 
             _level = Level.CreateLevel(_backgroundsSheet, this);
+
+            _mainMusic = Content.Load<SoundEffect>("airwolf");
+            _mainMusicInstance = _mainMusic.CreateInstance();
+            _mainMusicInstance.IsLooped = true;
 
             base.LoadContent();
         }
@@ -117,7 +126,6 @@ namespace Airwolf2023
 
         protected override void Draw(GameTime gameTime)
         {
-            // TODO: Add your drawing code here
             GraphicsDevice.SetRenderTarget(_renderTarget);
             GraphicsDevice.Clear(new Color(0.498f, 0f, 0.498f));
 
@@ -127,7 +135,10 @@ namespace Airwolf2023
 
             StateMachineDraw(_spriteBatch, (int)gameTime.ElapsedGameTime.TotalSeconds);
             base.Draw(gameTime);
-
+            //if (_stateMachine.CurrentState == STATE_GAME)
+            //{
+            //    DrawLevelMask();
+            //}
             _spriteBatch.End();
 
             GraphicsDevice.Viewport = new Viewport(0, 0, _screenWidth, _screenHeight);
@@ -166,12 +177,15 @@ namespace Airwolf2023
 
                         foreach (Enemy enemy in _level.CurrentEnemies)
                         {
-                            Color enemyPixel = enemy.GetPixel(backgroundX - enemy.PixelPositionX, backgroundY - enemy.PixelPositionY);
-                            if (enemyPixel.A > 0)
+                            if (enemy.Visible)
                             {
-                                //  debugContacts.Add(new Vector2(backgroundX, backgroundY));
-                                relativeContactPoint = new Point(x - _superCopter.SpriteSheet.FrameWidth / 2, y - _superCopter.SpriteSheet.FrameHeight / 2);
-                                return true;
+                                Color enemyPixel = enemy.GetPixel(backgroundX - enemy.PixelPositionX, backgroundY - enemy.PixelPositionY);
+                                if (enemyPixel.A > 0)
+                                {
+                                    //  debugContacts.Add(new Vector2(backgroundX, backgroundY));
+                                    relativeContactPoint = new Point(x - _superCopter.SpriteSheet.FrameWidth / 2, y - _superCopter.SpriteSheet.FrameHeight / 2);
+                                    return true;
+                                }
                             }
                         }
                     }
@@ -316,7 +330,10 @@ namespace Airwolf2023
             {
                 if (!_superCopter.IsExploding)
                 {
-                    _timer = MathF.Max(0, _timer - deltaTime);
+                    if (!CheatNoTimer)
+                    {
+                        _timer = MathF.Max(0, _timer - deltaTime);
+                    }
                     if (_timer <= 0)
                     {
                         Die();
@@ -359,6 +376,11 @@ namespace Airwolf2023
                 {
                     ChangeSection(_level.CurrentSectionIndex + 1, new Vector2(1, 0));
                 }
+            }
+            var keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.S))
+            {
+                _mainMusicInstance.Stop();
             }
         }
 
@@ -432,6 +454,7 @@ namespace Airwolf2023
             _level.GetSection(_startingSection).Reset();
             _level.Reset();
             _superCopter.StartSound();
+            _mainMusicInstance.Play();
         }
 
         private void TitleEnter()
@@ -483,15 +506,18 @@ namespace Airwolf2023
             {
                 foreach (Enemy enemy in _level.CurrentEnemies)
                 {
-                    for (int x = 0; x < enemy.SpriteSheet.FrameWidth; x++)
-                        for (int y = 0; y < enemy.SpriteSheet.FrameHeight; y++)
-                        {
-                            Color backgroundPixel = enemy.GetPixel(x, y);
-                            if (backgroundPixel.A > 0)
+                    if (enemy.Visible)
+                    {
+                        for (int x = 0; x < enemy.SpriteSheet.FrameWidth; x++)
+                            for (int y = 0; y < enemy.SpriteSheet.FrameHeight; y++)
                             {
-                                _spriteBatch.DrawRectangle(new Vector2(x + enemy.PixelPositionX, y + enemy.PixelPositionY), Vector2.One, Color.Green);
+                                Color backgroundPixel = enemy.GetPixel(x, y);
+                                if (backgroundPixel.A > 0)
+                                {
+                                    _spriteBatch.DrawRectangle(new Vector2(x + enemy.PixelPositionX, y + enemy.PixelPositionY), Vector2.One, Color.Green);
+                                }
                             }
-                        }
+                    }
                 }
             }
         }

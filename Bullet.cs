@@ -35,6 +35,7 @@ namespace Airwolf2023
         {
             _fireSound = Game.Content.Load<SoundEffect>("co");
             _fireSoundInstance = _fireSound.CreateInstance();
+            _fireSoundInstance.Volume = 0.5f;
         }
 
         public void Fire(Vector2 position, Vector2 direction)

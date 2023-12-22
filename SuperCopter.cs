@@ -65,9 +65,12 @@ namespace Airwolf2023
             _flapSound = Game.Content.Load<SoundEffect>("blblbl");
             _flapSoundInstance = _flapSound.CreateInstance();
             _flapSoundInstance.IsLooped = true;
+            _flapSoundInstance.Volume = 0.5f;
+            _flapSoundInstance.Pan = 0f;
 
             _collisionSound = Game.Content.Load<SoundEffect>("co");
             _collisionSoundInstance = _collisionSound.CreateInstance();
+            _collisionSoundInstance.Volume = 0.5f;
         }
 
         public override void Initialize()

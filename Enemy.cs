@@ -80,7 +80,10 @@ namespace Airwolf2023
             _currentWaypoint = index;
             _currentTargetWaypoint = GetNextWaypoint(index);
             _waypointTimer = 0;
-            LookTo((_waypoints[_currentTargetWaypoint].position - _waypoints[_currentWaypoint].position).ToVector2(), rotate:false);
+            if (_waypoints[_currentTargetWaypoint].position != _waypoints[_currentWaypoint].position)
+            {
+                LookTo((_waypoints[_currentTargetWaypoint].position - _waypoints[_currentWaypoint].position).ToVector2(), rotate: false);
+            }
         }
 
         public void Reset()
