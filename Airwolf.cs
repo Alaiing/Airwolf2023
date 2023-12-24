@@ -43,9 +43,9 @@ namespace Airwolf2023
 
         private int _repositionningY;
 
-        public static bool CheatNoCollision = true;
-        public static bool CheatNoGravity = true;
-        public static bool CheatNoDamage = false;
+        public static bool CheatNoCollision = false;
+        public static bool CheatNoGravity = false;
+        public static bool CheatNoDamage = true;
         public static bool CheatNoTimer = false;
         private int _startingSection = 0;
 
@@ -154,11 +154,11 @@ namespace Airwolf2023
             _spriteBatch.End();
         }
 
-        List<Vector2> debugContacts = new List<Vector2>();
+        List<Vector2> _contacts = new List<Vector2>();
 
-        private bool TestContact(out Point relativeContactPoint)
+        private bool TestContact(out Vector2 relativeContactPoint)
         {
-            debugContacts.Clear();
+            _contacts.Clear();
             for (int x = 0; x < _superCopter.SpriteSheet.FrameWidth; x++)
                 for (int y = -1; y < _superCopter.SpriteSheet.FrameHeight; y++)
                 {
@@ -170,9 +170,7 @@ namespace Airwolf2023
                         Color backgroundPixel = GetBackgroundColor(backgroundX, backgroundY);
                         if (backgroundPixel.A > 0)
                         {
-                            //debugContacts.Add(new Vector2(backgroundX, backgroundY));
-                            relativeContactPoint = new Point(x - _superCopter.SpriteSheet.FrameWidth / 2, y - _superCopter.SpriteSheet.FrameHeight / 2);
-                            return true;
+                            _contacts.Add(new Vector2(x - _superCopter.SpriteSheet.FrameWidth / 2, y - _superCopter.SpriteSheet.FrameHeight / 2));
                         }
 
                         foreach (Enemy enemy in _level.CurrentEnemies)
@@ -182,17 +180,25 @@ namespace Airwolf2023
                                 Color enemyPixel = enemy.GetPixel(backgroundX - enemy.PixelPositionX, backgroundY - enemy.PixelPositionY);
                                 if (enemyPixel.A > 0)
                                 {
-                                    //  debugContacts.Add(new Vector2(backgroundX, backgroundY));
-                                    relativeContactPoint = new Point(x - _superCopter.SpriteSheet.FrameWidth / 2, y - _superCopter.SpriteSheet.FrameHeight / 2);
-                                    return true;
+                                    _contacts.Add(new Vector2(x - _superCopter.SpriteSheet.FrameWidth / 2, y - _superCopter.SpriteSheet.FrameHeight / 2));
+                                    //return true;
                                 }
                             }
                         }
                     }
                 }
 
-            relativeContactPoint = new Point();
-            if (debugContacts.Count > 0) { return true; }
+            relativeContactPoint = new Vector2();
+            if (_contacts.Count > 0) 
+            {
+                for (int i  =  0; i < _contacts.Count;i++)
+                {
+                    relativeContactPoint += _contacts[i];
+                }
+                relativeContactPoint /= _contacts.Count;
+                return true; 
+            }
+
             return false;
         }
 
@@ -341,7 +347,7 @@ namespace Airwolf2023
                     }
                 }
 
-                if (!CheatNoCollision && TestContact(out Point relativeContactPoint))
+                if (!CheatNoCollision && TestContact(out Vector2 relativeContactPoint))
                 {
                     _superCopter.Collides(relativeContactPoint);
                     if (_superCopter.Armour < 0 && !_explosion.Visible)
@@ -470,7 +476,7 @@ namespace Airwolf2023
         private void TitleUpdate(GameTime time, float arg2)
         {
             SimpleControls.GetStates();
-            if (SimpleControls.IsADown(SimpleControls.PlayerNumber.Player1))
+            if (SimpleControls.IsADown(PlayerIndex.One) )
                 StartGame();
         }
 
@@ -485,7 +491,7 @@ namespace Airwolf2023
         #region Debug
         private void DrawContacts()
         {
-            foreach (Vector2 contact in debugContacts)
+            foreach (Vector2 contact in _contacts)
             {
                 _spriteBatch.DrawLine(contact + new Vector2(0, 0), contact + new Vector2(1, 0), Color.LightYellow);
             }

@@ -5,7 +5,6 @@ namespace Oudidon
 {
     public class SimpleControls
     {
-        public enum PlayerNumber { Player1, Player2 }
         private static KeyboardState _keyboardState;
         private static GamePadState _gamePadStatePlayer1;
         private static GamePadState _gamePadStatePlayer2;
@@ -35,29 +34,29 @@ namespace Oudidon
             return gamePadState.IsButtonDown(button) && previousGamePadState.IsButtonUp(button);
         }
 
-        public static bool IsAnyMoveKeyDown(PlayerNumber playerNumber)
+        public static bool IsAnyMoveKeyDown(PlayerIndex playerNumber)
         {
             return IsLeftDown(playerNumber) || IsRightDown(playerNumber) || IsUpDown(playerNumber) || IsDownDown(playerNumber);
         }
 
-        public static bool IsLeftDown(PlayerNumber playerNumber)
+        public static bool IsLeftDown(PlayerIndex playerNumber)
         {
-            if (playerNumber == PlayerNumber.Player1 && _keyboardState.IsKeyDown(Keys.Left)
-                || playerNumber == PlayerNumber.Player2 && _keyboardState.IsKeyDown(Keys.G))
+            if (playerNumber == PlayerIndex.One && _keyboardState.IsKeyDown(Keys.Left)
+                || playerNumber == PlayerIndex.Two && _keyboardState.IsKeyDown(Keys.G))
             {
                 return true;
             }
 
-            GamePadState currentGamepadState = playerNumber == PlayerNumber.Player1 ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
+            GamePadState currentGamepadState = playerNumber == PlayerIndex.One ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
 
             return currentGamepadState.IsButtonDown(Buttons.DPadLeft) || currentGamepadState.IsButtonDown(Buttons.LeftThumbstickLeft);
         }
 
-        public static bool IsLeftPressedThisFrame(PlayerNumber playerNumber)
+        public static bool IsLeftPressedThisFrame(PlayerIndex playerNumber)
         {
             GamePadState previousGamePad;
             GamePadState currentState;
-            if (playerNumber == PlayerNumber.Player1)
+            if (playerNumber == PlayerIndex.One)
             {
                 if (IsKeyPressedThisFrame(Keys.Left))
                 {
@@ -79,15 +78,15 @@ namespace Oudidon
             return IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.DPadLeft) || IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.LeftThumbstickLeft);
         }
 
-        public static bool IsRightDown(PlayerNumber playerNumber)
+        public static bool IsRightDown(PlayerIndex playerNumber)
         {
-            if (playerNumber == PlayerNumber.Player1 && _keyboardState.IsKeyDown(Keys.Right)
-                || playerNumber == PlayerNumber.Player2 && _keyboardState.IsKeyDown(Keys.J))
+            if (playerNumber == PlayerIndex.One && _keyboardState.IsKeyDown(Keys.Right)
+                || playerNumber ==  PlayerIndex.Two && _keyboardState.IsKeyDown(Keys.J))
             {
                 return true;
             }
 
-            GamePadState currentGamepadState = playerNumber == PlayerNumber.Player1 ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
+            GamePadState currentGamepadState = playerNumber == PlayerIndex.One ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
 
             if (currentGamepadState.IsConnected)
             {
@@ -105,11 +104,11 @@ namespace Oudidon
             return false;
         }
 
-        public static bool IsRightPressedThisFrame(PlayerNumber playerNumber)
+        public static bool IsRightPressedThisFrame(PlayerIndex playerNumber)
         {
             GamePadState previousGamePad;
             GamePadState currentState;
-            if (playerNumber == PlayerNumber.Player1)
+            if (playerNumber == PlayerIndex.One)
             {
                 if (IsKeyPressedThisFrame(Keys.Right))
                 {
@@ -131,15 +130,15 @@ namespace Oudidon
             return IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.DPadRight) || IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.LeftThumbstickRight);
         }
 
-        public static bool IsUpDown(PlayerNumber playerNumber)
+        public static bool IsUpDown(PlayerIndex playerNumber)
         {
-            if (playerNumber == PlayerNumber.Player1 && _keyboardState.IsKeyDown(Keys.Up)
-                || playerNumber == PlayerNumber.Player2 && _keyboardState.IsKeyDown(Keys.Y))
+            if (playerNumber == PlayerIndex.One && _keyboardState.IsKeyDown(Keys.Up)
+                || playerNumber == PlayerIndex.Two && _keyboardState.IsKeyDown(Keys.Y))
             {
                 return true;
             }
 
-            GamePadState currentGamepadState = playerNumber == PlayerNumber.Player1 ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
+            GamePadState currentGamepadState = playerNumber == PlayerIndex.One ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
 
             if (currentGamepadState.IsConnected)
             {
@@ -157,11 +156,11 @@ namespace Oudidon
             return false;
         }
 
-        public static bool IsUpPressedThisFrame(PlayerNumber playerNumber)
+        public static bool IsUpPressedThisFrame(PlayerIndex playerNumber)
         {
             GamePadState previousGamePad;
             GamePadState currentState;
-            if (playerNumber == PlayerNumber.Player1)
+            if (playerNumber == PlayerIndex.One)
             {
                 if (IsKeyPressedThisFrame(Keys.Up))
                 {
@@ -183,15 +182,15 @@ namespace Oudidon
             return IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.DPadUp) || IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.LeftThumbstickUp);
         }
 
-        public static bool IsDownDown(PlayerNumber playerNumber)
+        public static bool IsDownDown(PlayerIndex playerNumber)
         {
-            if (playerNumber == PlayerNumber.Player1 && _keyboardState.IsKeyDown(Keys.Down)
-                || playerNumber == PlayerNumber.Player2 && _keyboardState.IsKeyDown(Keys.H))
+            if (playerNumber == PlayerIndex.One && _keyboardState.IsKeyDown(Keys.Down)
+                || playerNumber == PlayerIndex.Two && _keyboardState.IsKeyDown(Keys.H))
             {
                 return true;
             }
 
-            GamePadState currentGamepadState = playerNumber == PlayerNumber.Player1 ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
+            GamePadState currentGamepadState = playerNumber == PlayerIndex.One ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
 
             if (currentGamepadState.IsConnected)
             {
@@ -209,11 +208,11 @@ namespace Oudidon
             return false;
         }
 
-        public static bool IsDownPressedThisFrame(PlayerNumber playerNumber)
+        public static bool IsDownPressedThisFrame(PlayerIndex playerNumber)
         {
             GamePadState previousGamePad;
             GamePadState currentState;
-            if (playerNumber == PlayerNumber.Player1)
+            if (playerNumber == PlayerIndex.One)
             {
                 if (IsKeyPressedThisFrame(Keys.Down))
                 {
@@ -235,15 +234,15 @@ namespace Oudidon
             return IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.DPadDown) || IsButtonPressedThisFrame(currentState, previousGamePad, Buttons.LeftThumbstickDown);
         }
 
-        public static bool IsADown(PlayerNumber playerNumber)
+        public static bool IsADown(PlayerIndex playerNumber)
         {
-            if (playerNumber == PlayerNumber.Player1 && _keyboardState.IsKeyDown(Keys.Space)
-                || playerNumber == PlayerNumber.Player2 && _keyboardState.IsKeyDown(Keys.F))
+            if (playerNumber == PlayerIndex.One && _keyboardState.IsKeyDown(Keys.Space)
+                || playerNumber == PlayerIndex.Two && _keyboardState.IsKeyDown(Keys.F))
             {
                 return true;
             }
 
-            GamePadState currentGamepadState = playerNumber == PlayerNumber.Player1 ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
+            GamePadState currentGamepadState = playerNumber == PlayerIndex.One ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
 
             if (currentGamepadState.IsConnected)
             {
@@ -258,15 +257,15 @@ namespace Oudidon
 
         // TODO : pressed this frame for A
 
-        public static bool IsBDown(PlayerNumber playerNumber)
+        public static bool IsBDown(PlayerIndex playerNumber)
         {
-            if (playerNumber == PlayerNumber.Player1 && _keyboardState.IsKeyDown(Keys.Enter)
-                || playerNumber == PlayerNumber.Player2 && _keyboardState.IsKeyDown(Keys.D))
+            if (playerNumber == PlayerIndex.One && _keyboardState.IsKeyDown(Keys.Enter)
+                || playerNumber == PlayerIndex.Two && _keyboardState.IsKeyDown(Keys.D))
             {
                 return true;
             }
 
-            GamePadState currentGamepadState = playerNumber == PlayerNumber.Player1 ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
+            GamePadState currentGamepadState = playerNumber == PlayerIndex.One ? _gamePadStatePlayer1 : _gamePadStatePlayer2;
 
             if (currentGamepadState.IsConnected)
             {

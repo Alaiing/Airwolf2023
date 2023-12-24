@@ -109,7 +109,7 @@ namespace Airwolf2023
             _stateMachine.SetState(STATE_HORIZONTAL);
         }
 
-        public void Collides(Point relativeContantPosition)
+        public void Collides(Vector2 relativeContactPosition)
         {
             _collisionSoundInstance.Play();
             if (_damageCooldown >= 0.25f)
@@ -120,8 +120,8 @@ namespace Airwolf2023
                     _armour--;
                 }
             }
-            int pushBackX = -Math.Sign(_horizontalSpeed);
-            int pushBackY = (_wasGoingDown || _wasGoingUp || _horizontalSpeed == 0) ? -Math.Sign(_verticalSpeed) : 0;
+            int pushBackX = -Math.Sign(relativeContactPosition.X);
+            int pushBackY = -Math.Sign(relativeContactPosition.Y); // (_wasGoingDown || _wasGoingUp || _horizontalSpeed == 0) ? -Math.Sign(_verticalSpeed) : 0;
             MoveBy(new Vector2(pushBackX, pushBackY) * 2);
             _verticalSpeed = 0f;
             _isColliding = true;
@@ -167,12 +167,12 @@ namespace Airwolf2023
 
             SimpleControls.GetStates();
 
-            if (SimpleControls.IsUpDown(SimpleControls.PlayerNumber.Player1))
+            if (SimpleControls.IsUpDown(PlayerIndex.One))
             {
                 _verticalSpeed = -_verticalVelocity;
                 _wasGoingUp = true;
             }
-            else if (SimpleControls.IsDownDown(SimpleControls.PlayerNumber.Player1))
+            else if (SimpleControls.IsDownDown(PlayerIndex.One))
             {
                 _verticalSpeed = _verticalVelocity;
                 _wasGoingDown = true;
@@ -199,7 +199,7 @@ namespace Airwolf2023
                 }
             }
 
-            if (SimpleControls.IsLeftDown(SimpleControls.PlayerNumber.Player1))
+            if (SimpleControls.IsLeftDown(PlayerIndex.One))
             {
                 _horizontalSpeed = -_horizontalVelocity;
                 if (_stateMachine.CurrentState == STATE_VERTICAL && _verticalAnimationDone)
@@ -216,7 +216,7 @@ namespace Airwolf2023
                     _horizontalDirection = -1;
                 }
             }
-            else if (SimpleControls.IsRightDown(SimpleControls.PlayerNumber.Player1))
+            else if (SimpleControls.IsRightDown(PlayerIndex.One))
             {
                 _horizontalSpeed = _horizontalVelocity;
                 if (_stateMachine.CurrentState == STATE_VERTICAL && _verticalAnimationDone)
@@ -238,7 +238,7 @@ namespace Airwolf2023
                 _horizontalSpeed = 0;
             }
 
-            if (SimpleControls.IsADown(SimpleControls.PlayerNumber.Player1)) // TODO: fire if pressed this frame
+            if (SimpleControls.IsADown(PlayerIndex.One)) // TODO: fire if pressed this frame
             {
                 EventsManager.FireEvent("FIRE", this);
             }

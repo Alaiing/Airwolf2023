@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airwolf2023", "Airwolf2023.csproj", "{577375EB-5AFD-46DC-AB15-98AC2DEF4190}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Airwolf2023", "Airwolf2023.csproj", "{C4709182-E01F-495A-9AFD-E44831379438}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{577375EB-5AFD-46DC-AB15-98AC2DEF4190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{577375EB-5AFD-46DC-AB15-98AC2DEF4190}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{577375EB-5AFD-46DC-AB15-98AC2DEF4190}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{577375EB-5AFD-46DC-AB15-98AC2DEF4190}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4709182-E01F-495A-9AFD-E44831379438}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4709182-E01F-495A-9AFD-E44831379438}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4709182-E01F-495A-9AFD-E44831379438}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4709182-E01F-495A-9AFD-E44831379438}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {AC49378D-88D5-45A7-A80F-AF5D3C9AC88D}
+		SolutionGuid = {712A1799-D825-477C-92F4-F824127848C3}
 	EndGlobalSection
 EndGlobal
