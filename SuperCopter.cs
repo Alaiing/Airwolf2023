@@ -35,7 +35,10 @@ namespace Airwolf2023
 
         private int _armour;
         public int Armour => _armour;
+        private int _maxArmour;
+        public float MaxArmour => _maxArmour;
         private float _damageCooldown;
+        private float _damageCooldownDuration;
         private bool _isColliding;
 
         public bool IsHorizontal => _stateMachine.CurrentState == STATE_HORIZONTAL;
@@ -49,6 +52,8 @@ namespace Airwolf2023
 
         private SpriteSheet _helixSheet;
         private float _helixFrame;
+
+        private float _damageFeedbackTimer;
 
         public SuperCopter(string spriteSheet, int frameWidth, int frameHeight, Game game) : base(spriteSheet, frameWidth, frameHeight, game) { }
 
@@ -85,6 +90,9 @@ namespace Airwolf2023
 
             _fallAcceleration = _fallSpeed / _fallAccelerationDuration;
 
+            _damageCooldownDuration = ConfigManager.GetConfig("DAMAGE_COOLDOWN", 0.25f);
+            _maxArmour = ConfigManager.GetConfig("MAX_HP", 6);
+
             Reset();
         }
 
@@ -100,7 +108,7 @@ namespace Airwolf2023
 
         public void Reset()
         {
-            _armour = 6;
+            _armour = _maxArmour;
             _verticalSpeed = 0f;
             _horizontalSpeed = 0f;
             _horizontalDirection = -1;
@@ -112,12 +120,13 @@ namespace Airwolf2023
         public void Collides(Vector2 relativeContactPosition)
         {
             _collisionSoundInstance.Play();
-            if (_damageCooldown >= 0.25f)
+            if (_damageCooldown >= _damageCooldownDuration)
             {
                 _damageCooldown = 0;
                 if (!Airwolf.CheatNoDamage)
                 {
                     _armour--;
+                    _damageFeedbackTimer = _damageCooldownDuration;
                 }
             }
             int pushBackX = -Math.Sign(relativeContactPosition.X);
@@ -150,6 +159,16 @@ namespace Airwolf2023
             if (_helixFrame >= _helixSheet.FrameCount) 
             { 
                 _helixFrame = 0; 
+            }
+
+            if (_damageFeedbackTimer > 0f) 
+            {
+                SetColor(Color.Lerp(Color.White, Color.Red, (MathF.Sin(_damageFeedbackTimer * 12 * MathF.PI) +  1)/2 ));
+                _damageFeedbackTimer -= deltaTime;
+            }
+            else
+            {
+                SetColor(Color.White);
             }
         }
 

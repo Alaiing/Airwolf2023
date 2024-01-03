@@ -22,7 +22,7 @@ namespace Airwolf2023
 
         protected override void LoadContent()
         {
-            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, 31, 24, 15, 5);
+            _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, _frameWidth, _frameHeight, _frameWidth / 2, 5);
             _spriteSheet.RegisterAnimation("Explode", 0, 5, 8f);
 
             _explosionSound = Game.Content.Load<SoundEffect>("pouahwouha");
@@ -37,7 +37,7 @@ namespace Airwolf2023
 
         private int _playedCounter;
 
-        public void Explode(Action onExploded)
+        public void Explode(Action onExploded = null)
         {
             Visible = true;
             Enabled = true;

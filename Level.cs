@@ -126,18 +126,18 @@ namespace Airwolf2023
                 level.AddSection(new LevelSection(backgroundSheet, i, game), i);
             }
 
-            Enemy newEnemy = new Enemy("parabola", 8, 16, game);
+            Enemy newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(0).AddEnemy(newEnemy, new Vector2(40, 32));
-            level.GetSection(0).AddEnemy(new Enemy("parabola", 8, 16, game), new Vector2(134, 79));
+            level.GetSection(0).AddEnemy(new Enemy("parabola", 8, 16, 10, game), new Vector2(134, 79));
             level.AddSwitch(new Point(44, 80), 0, 2);
 
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(4).AddEnemy(newEnemy, new Vector2(32, 32));
-            level.GetSection(4).AddEnemy(new Enemy("parabola", 8, 16, game), new Vector2(126, 64));
+            level.GetSection(4).AddEnemy(new Enemy("parabola", 8, 16, 10, game), new Vector2(126, 64));
 
-            newEnemy = new Enemy("pinata", 8, 16, game);
+            newEnemy = new Enemy("pinata", 8, 16, 20, game);
             newEnemy.AddWaypoint(42, 48, 0f);
             newEnemy.AddWaypoint(101, 48, 0f);
             newEnemy.AddWaypoint(101, 67, 0f);
@@ -145,20 +145,20 @@ namespace Airwolf2023
             newEnemy.SetBaseSpeed(20f);
             level.GetSection(8).AddEnemy(newEnemy, new Vector2(42, 48));
             newEnemy.Reset();
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(8).AddEnemy(newEnemy, new Vector2(88, 32));
-            level.GetSection(8).AddEnemy(new Enemy("parabola", 8, 16, game), new Vector2(16, 63));
+            level.GetSection(8).AddEnemy(new Enemy("parabola", 8, 16, 10, game), new Vector2(16, 63));
 
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(9).AddEnemy(newEnemy, new Vector2(48, 16));
 
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(9).AddEnemy(newEnemy, new Vector2(119, 16));
 
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.AddWaypoint(83, 39, 2f);
             newEnemy.AddWaypoint(28, 39, 0f);
             newEnemy.AddWaypoint(83, 39, 2f);
@@ -169,15 +169,15 @@ namespace Airwolf2023
             newEnemy = new Gate("lightning_gate", 47, 12, game);
             level.GetSection(9).AddEnemy(newEnemy, new Vector2(80, 65));
 
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             level.GetSection(10).AddEnemy(newEnemy, new Vector2(112, 63));
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.AddWaypoint(24, 69, 0f);
             newEnemy.AddWaypoint(24, 24, 0f);
             newEnemy.SetBaseSpeed(16f);
             level.GetSection(10).AddEnemy(newEnemy, new Vector2(24, 69));
             newEnemy.Reset();
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.AddWaypoint(126, 31, 0f);
             newEnemy.AddWaypoint(107, 51, 0f);
             newEnemy.AddWaypoint(87, 31, 0f);
@@ -190,26 +190,26 @@ namespace Airwolf2023
             level.AddSwitch(new Point(36, 80), 10, 10);
 
 
-            newEnemy = new Enemy("thrusters", 8, 16, game);
+            newEnemy = new Enemy("thrusters", 8, 16, -1, game);
             newEnemy.SetAnimationSpeed(4f);
             level.GetSection(5).AddEnemy(newEnemy, new Vector2(64, 47));
-            newEnemy = new Enemy("thrusters", 8, 16, game);
+            newEnemy = new Enemy("thrusters", 8, 16, -1, game);
             newEnemy.SetAnimationSpeed(2f);
             level.GetSection(5).AddEnemy(newEnemy, new Vector2(88, 47));
-            newEnemy = new Enemy("thrusters", 8, 16, game);
+            newEnemy = new Enemy("thrusters", 8, 16, -1, game);
             newEnemy.SetAnimationSpeed(1f);
             level.GetSection(5).AddEnemy(newEnemy, new Vector2(112, 47));
-            newEnemy = new Enemy("pinata", 8, 16, game);
+            newEnemy = new Enemy("pinata", 8, 16, 20, game);
             newEnemy.AddWaypoint(144, 63, 20f);
             newEnemy.AddWaypoint(54, 63, 0f, teleport:true);
             newEnemy.SetBaseSpeed(40f);
             level.GetSection(5).AddEnemy(newEnemy, new Vector2(144, 63));
 
 
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(6).AddEnemy(newEnemy, new Vector2(24, 16));
-            newEnemy = new Enemy("pinata", 8, 16, game);
+            newEnemy = new Enemy("pinata", 8, 16, 20, game);
             newEnemy.AddWaypoint(44, 31);
             newEnemy.AddWaypoint(102, 31);
             newEnemy.SetBaseSpeed(35f);
@@ -218,13 +218,13 @@ namespace Airwolf2023
             newEnemy = new Gate("lightning_gate", 47, 12, game);
             level.GetSection(6).AddGate((Gate)newEnemy, new Vector2(80, 81));
 
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(2).AddEnemy(newEnemy, new Vector2(28, 16));
-            newEnemy = new Enemy("parabola", 8, 16, game);
+            newEnemy = new Enemy("parabola", 8, 16, 10, game);
             newEnemy.SetScale(new Vector2(1, -1));
             level.GetSection(2).AddEnemy(newEnemy, new Vector2(60, 16));
-            newEnemy = new Enemy("disco_ball", 8, 16, game);
+            newEnemy = new Enemy("disco_ball", 8, 16, 50, game);
             newEnemy.AddWaypoint(114, 36);
             newEnemy.AddWaypoint(21, 36);
             newEnemy.SetBaseSpeed(30f);
@@ -234,14 +234,14 @@ namespace Airwolf2023
             level.GetSection(2).AddGate((Gate)newEnemy, new Vector2(152, 16));
             level.AddSwitch(new Point(36, 80), 2, 6);
 
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.AddWaypoint(93, 47);
             newEnemy.AddWaypoint(40, 47);
             newEnemy.AddWaypoint(93, 47, 3f);
             newEnemy.SetBaseSpeed(28f);
             level.GetSection(11).AddEnemy(newEnemy, new Vector2(93, 47));
             newEnemy.Reset();
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.AddWaypoint(81, 16);
             newEnemy.AddWaypoint(81, 55);
             newEnemy.SetBaseSpeed(20f);
@@ -249,17 +249,17 @@ namespace Airwolf2023
             newEnemy.Reset();
             level.AddSwitch(new Point(100, 80), 11, 3);
 
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.SetAnimationSpeed(4);
             level.GetSection(3).AddEnemy(newEnemy, new Vector2(56, 32));
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.SetAnimationSpeed(2);
             newEnemy.AddWaypoint(121, 32);
             newEnemy.AddWaypoint(40, 32);
             newEnemy.SetBaseSpeed(20f);
             level.GetSection(3).AddEnemy(newEnemy, new Vector2(81, 16));
             newEnemy.Reset();
-            newEnemy = new Enemy("monolith", 8, 16, game);
+            newEnemy = new Enemy("monolith", 8, 16, 50, game);
             newEnemy.SetAnimationSpeed(2);
             newEnemy.AddWaypoint(105, 48);
             newEnemy.AddWaypoint(24, 48);
@@ -270,12 +270,12 @@ namespace Airwolf2023
             newEnemy.SetScale(new Vector2(40f / 47f, 1));
             level.GetSection(3).AddGate((Gate)newEnemy, new Vector2(32, 65));
 
-            newEnemy = new Enemy("pinata", 8, 16, game);
+            newEnemy = new Enemy("pinata", 8, 16, 20, game);
             newEnemy.AddWaypoint(52, 48);
             newEnemy.AddWaypoint(26, 48);
             newEnemy.SetBaseSpeed(15f);
             level.GetSection(7).AddEnemy(newEnemy, new Vector2(144, 63));
-            newEnemy = new Enemy("pinata", 8, 16, game);
+            newEnemy = new Enemy("pinata", 8, 16, 20, game);
             newEnemy.AddWaypoint(119, 61);
             newEnemy.AddWaypoint(81, 61);
             newEnemy.AddWaypoint(81, 30);
@@ -283,12 +283,18 @@ namespace Airwolf2023
             newEnemy.SetBaseSpeed(40f);
             level.GetSection(7).AddEnemy(newEnemy, new Vector2(144, 63));
             newEnemy.Reset();
-            newEnemy = new Enemy("disco_ball", 8, 16, game);
+            newEnemy = new Enemy("disco_ball", 8, 16, 50, game);
             newEnemy.AddWaypoint(88, 30);
             newEnemy.AddWaypoint(88, 63);
             newEnemy.SetBaseSpeed(20f);
             level.GetSection(7).AddEnemy(newEnemy, new Vector2(80, 65));
             newEnemy.Reset();
+            newEnemy = new Gate("prisoner_gate", 24, 36, game);
+            level.GetSection(7).AddGate((Gate)newEnemy, new Vector2(128, 20), gateCount:2);
+            level.AddSwitch(new Point(28, 96), 7, 7);
+            level.AddSwitch(new Point(116, 80), 7, 7);
+            newEnemy = new Prisoner("prisoner", 7, 15, -1, game);
+            level.GetSection(7).AddEnemy(newEnemy, new Vector2(136, 31));
 
 
             return level;

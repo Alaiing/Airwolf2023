@@ -8,18 +8,16 @@ using System.Threading.Tasks;
 
 namespace Airwolf2023
 {
-    public class Gate : Enemy
+    internal class Prisoner : Enemy
     {
-        public Gate(string spriteSheetAsset, int frameWidth, int frameHeight, Game game) : base(spriteSheetAsset, frameWidth, frameHeight, -1, game)
+        public Prisoner(string spriteSheetAsset, int frameWidth, int frameHeight, int maxLife, Game game) : base(spriteSheetAsset, frameWidth, frameHeight, maxLife, game)
         {
         }
-
         protected override void LoadContent()
         {
             _spriteSheet = new SpriteSheet(Game.Content, _spriteSheetAsset, _frameWidth, _frameHeight);
-            _spriteSheet.RegisterAnimation("Idle", 0, 0, 0f);
+            _spriteSheet.RegisterAnimation("Idle", 0, 0, 8f);
             SetAnimation("Idle");
         }
-
     }
 }

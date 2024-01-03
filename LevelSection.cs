@@ -21,6 +21,8 @@ namespace Airwolf2023
         private readonly List<Enemy> _enemies = new List<Enemy>();
         public List<Enemy> Enemies => _enemies;
         public Gate _gate;
+        public int _gateCount;
+        public int _maxGateCount;
         public bool gateOpen;
         private readonly Dictionary<Point, int> _switches = new();
 
@@ -40,10 +42,22 @@ namespace Airwolf2023
             enemy.MoveTo(position);
         }
 
-        public void AddGate(Gate gate, Vector2 position)
+        public void AddGate(Gate gate, Vector2 position, int gateCount = 1)
         {
             AddEnemy(gate, position);
             _gate = gate;
+            _maxGateCount = gateCount;
+            _gateCount = _maxGateCount;
+        }
+
+        public void ActivateGate()
+        {
+            _gateCount--;
+            if (_gateCount <= 0)
+            {
+                gateOpen = true;
+                UpdateGate();
+            }
         }
 
         public void AddSwitch(Point position, int gateSection)
@@ -127,6 +141,7 @@ namespace Airwolf2023
             {
                 enemy.Reset();
             }
+            _gateCount = _maxGateCount;
             UpdateGate();
         }
 

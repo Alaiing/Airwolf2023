@@ -21,9 +21,15 @@ namespace Airwolf2023
         private int _currentTargetWaypoint;
         private float _waypointTimer;
 
-        public Enemy(string spriteSheetAsset, int frameWidth, int frameHeight, Game game) : base(spriteSheetAsset, frameWidth, frameHeight, game)
+        private int _maxLife;
+        private int _life;
+        public int Life => _life;
+        public bool IsDead => _maxLife > 0 == _life <= 0;
+
+        public Enemy(string spriteSheetAsset, int frameWidth, int frameHeight, int maxLife, Game game) : base(spriteSheetAsset, frameWidth, frameHeight, game)
         {
-            DrawOrder = 10;    
+            DrawOrder = 10;
+            _maxLife = maxLife;
         }
 
         protected override void LoadContent()
@@ -92,6 +98,20 @@ namespace Airwolf2023
             {
                 MoveTo(new Vector2(_waypoints[0].position.X, _waypoints[0].position.Y));
                 SetCurrentWaypoint(0);
+            }
+            _life = _maxLife;
+            Visible = true;
+        }
+
+        public void Damage(int damage)
+        {
+            if (_maxLife > 0)
+            {
+                _life -= damage;
+                if (_life <= 0)
+                {
+                    Visible = false;
+                }
             }
         }
     }
